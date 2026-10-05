@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>Money Manager · 个人记账</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="desktop-note" aria-hidden="true">
+    <div class="desktop-brand"><span class="brand-mark">M</span> MONEY MANAGER</div>
+    <p class="desktop-kicker">个人记账 · 网页预览</p>
+    <h1>把每天的收支，<br><em>记得清清楚楚。</em></h1>
+    <p class="desktop-copy">从记一笔到看月度趋势，这里可以先体验手机端的整体布局与主要交互。</p>
+    <div class="preview-tip"><span class="tip-dot"></span> 在右侧预览中点击体验</div>
+  </div>
+
+  <div class="phone-frame">
+    <div class="app-shell">
+      <main id="view" class="view" aria-live="polite"></main>
+      <nav class="bottom-nav" aria-label="主导航">
+        <button type="button" class="nav-item active" data-page="home" aria-label="首页">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+          <span>首页</span>
+        </button>
+        <button type="button" class="nav-item" data-page="bills" aria-label="账单">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 9h16M8 13h3M8 17h8"/></svg>
+          <span>账单</span>
+        </button>
+        <button type="button" class="nav-item" data-page="stats" aria-label="统计">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-8M22 20H2"/></svg>
+          <span>统计</span>
+        </button>
+        <button type="button" class="nav-item" data-page="me" aria-label="我的">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span>我的</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <div id="entryModal" class="modal-layer" hidden>
+    <div class="modal-backdrop" data-close-entry="true"></div>
+    <section class="entry-sheet" role="dialog" aria-modal="true" aria-labelledby="entryTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-top">
+        <h2 id="entryTitle">记一笔</h2>
+        <button type="button" class="icon-button" data-close-entry="true" aria-label="关闭">×</button>
+      </div>
+      <form id="entryForm">
+        <div class="type-switch" role="group" aria-label="账单类型">
+          <button type="button" class="type-option active" data-type="expense">支出</button>
+          <button type="button" class="type-option" data-type="income">收入</button>
+        </div>
+        <label class="amount-label" for="amount">金额</label>
+        <div class="amount-field"><span>¥</span><input id="amount" name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00" required></div>
+        <div class="form-grid">
+          <label>分类<select id="category" name="category" required></select></label>
+          <label>日期时间<input id="occurredAt" name="occurredAt" type="datetime-local" required></label>
+        </div>
+        <label class="note-label">备注（选填）<input id="note" name="note" type="text" maxlength="80" placeholder="例如：午餐、地铁、电影"></label>
+        <div class="sheet-actions">
+          <button type="button" id="deleteEntry" class="delete-button" hidden>删除记录</button>
+          <button type="submit" class="save-button">保存这笔账</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="toolsModal" class="modal-layer" hidden>
+    <div class="modal-backdrop" data-close-tools="true"></div>
+    <section class="tools-sheet" role="dialog" aria-modal="true" aria-labelledby="toolsTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-top">
+        <h2 id="toolsTitle">导入导出</h2>
+        <button type="button" class="icon-button" data-close-tools="true" aria-label="关闭">×</button>
+      </div>
+      <p>把账单导出为 CSV，或从 CSV / JSON 文件恢复到当前浏览器。</p>
+      <button type="button" class="tool-action" data-tool="export-csv"><span>导出 CSV 账单</span><span>↗</span></button>
+      <button type="button" class="tool-action" data-tool="import-csv"><span>导入 CSV 账单</span><span>›</span></button>
+      <button type="button" class="tool-action" data-tool="import-json"><span>恢复 JSON 备份</span><span>›</span></button>
+      <p class="tools-hint">导入会替换当前网页中的账单，操作前请先备份。</p>
+    </section>
+  </div>
+
+  <input id="importFile" type="file" accept=".json,.csv,application/json,text/csv" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>

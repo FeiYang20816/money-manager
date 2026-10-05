@@ -1,0 +1,19 @@
+<resources>
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#E85157</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">#F8F7F4</item>
+        <item name="android:navigationBarColor">#F8F7F4</item>
+        <item name="android:statusBarColor">#F8F7F4</item>
+    </style>
+    <style name="QuickTheme" parent="android:style/Theme.Material.Light.Dialog.NoActionBar">
+        <item name="android:colorAccent">#E85157</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowMinWidthMajor">92%</item>
+        <item name="android:windowMinWidthMinor">92%</item>
+        <item name="android:windowBackground">#FFFDFB</item>
+    </style>
+    <string name="quick_label">记一笔</string>
+</resources>

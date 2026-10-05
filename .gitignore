@@ -1,0 +1,26 @@
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+.tools/
+dist/
+android/.signing/
+
+# Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Built artifacts and signing material
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Personal exports
+money-manager-backup-*.json
+money-manager-*.csv
