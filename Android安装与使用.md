@@ -6,7 +6,7 @@
 
 ## 1. 安装
 
-1. 从 [GitHub Release 下载 v0.1.0 APK](https://github.com/FeiYang20816/money-manager/releases/download/v0.1.0/money-manager-0.1.0.apk)，并将其保存到手机。
+1. 从 [GitHub Release 下载 v0.1.0 APK](https://github.com/FeiYang20816/money-manager/releases/download/v0.1.0/money-manager-0.1.0.apk)。
 2. 在手机文件管理中点开 APK；如果系统要求，允许这一次所用文件管理器安装应用。
 3. 安装完成后，打开“个人记账”。第一次是空账本，可以直接记账。
 
