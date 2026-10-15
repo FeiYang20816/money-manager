@@ -4,7 +4,7 @@
 
 首个可安装版本采用 **本地 WebView 界面 + Java 原生系统能力**。界面与网页版共用 `../web`，不加载远程网页，也不依赖服务器。日后可以逐页替换 UI，并保留 JSON 备份格式。
 
-- 包名 `cn.personal.money`；版本 `0.1.0` / `versionCode 1`。
+- 包名 `cn.personal.money`；版本 `0.2.0` / `versionCode 2`。
 - `minSdk 26`、`targetSdk 36`、`compileSdk 36`。
 - `MainActivity`：受限的本地资源页面、SQLite 数据桥接、通知授权、SAF 文件选择、报告通知跳转、系统返回。
 - `LedgerStore`：私有 SQLite `kv` 表，存放账单 JSON、设置 JSON、报告缓存、通知去重键。账单和设置在一个事务内保存；快捷记账使用同一存储。
@@ -22,7 +22,7 @@
 .\build-apk.ps1 -Jdk 'C:\path\to\jdk' -AndroidJar 'C:\path\to\sdk\platforms\android-36\android.jar' -BuildTools 'C:\path\to\sdk\build-tools\36.0.0'
 ```
 
-输出：`../dist/money-manager-0.1.0.apk`。
+输出：`../dist/money-manager-0.2.0.apk`。
 
 脚本使用 AAPT2、javac、D8、zipalign、apksigner 编译、打包与签名，不依赖 Gradle 下载。输出目录在 `app/build/manual`，每次构建仅清理这个目录。首次构建会在本机创建 `.signing`；后续本机构建复用这份密钥。该目录已被 Git 忽略。
 

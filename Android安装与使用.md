@@ -1,16 +1,18 @@
-# Android 首版安装与使用
+# Android 安装与使用
 
-版本：0.1.0 · 2026-10-05
+版本：0.2.0 · 2026-10-15
 
 适用于 Android 8.0 及以上设备。已有 Android 设备的基础使用反馈；不同品牌的后台设置可能影响总结提醒的送达时间。
 
 ## 1. 安装
 
-1. 从 [GitHub Release 下载 v0.1.0 APK](https://github.com/FeiYang20816/money-manager/releases/download/v0.1.0/money-manager-0.1.0.apk)。
+1. 从 [GitHub Release 下载 v0.2.0 APK](https://github.com/FeiYang20816/money-manager/releases/download/v0.2.0/money-manager-0.2.0.apk)。
 2. 在手机文件管理中点开 APK；如果系统要求，允许这一次所用文件管理器安装应用。
 3. 安装完成后，打开“个人记账”。第一次是空账本，可以直接记账。
 
 以后升级请使用相同签名、相同包名的安装包覆盖安装。不要先卸载：卸载会删除本机账本。
+
+记账时可以在金额栏使用加、减、乘、除，例如输入 `25+12` 会显示 `¥37.00`。主界面提供计算键盘，桌面快捷记账窗口提供运算符按钮；保存时只记录计算后的金额。
 
 ## 2. 从网页版迁移账单（可选）
 

@@ -235,6 +235,12 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .amount-field span { font-size: 22px; font-weight: 700; }
 .amount-field input { width: 100%; min-width: 0; border: 0; outline: 0; font-size: 34px; font-weight: 780; color: var(--ink); }
 .amount-field input::placeholder { color: #d7d1ca; }
+.amount-preview { min-height: 20px; margin-top: 5px; color: var(--muted); font-size: 12px; }
+.amount-preview.has-result { color: var(--red-deep); font-weight: 700; }
+.amount-keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+.amount-keypad button { height: 38px; border: 1px solid var(--line); border-radius: 10px; background: #faf9f7; color: var(--ink); font-size: 19px; }
+.amount-keypad button:active { background: var(--red-soft); }
+.amount-keypad .amount-equals { grid-column: 1 / -1; height: 36px; background: var(--red-soft); color: var(--red-deep); font-size: 14px; font-weight: 750; }
 .form-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 12px; margin-top: 18px; }
 .form-grid label, .note-label { display: block; color: #8e8983; font-size: 12px; }
 .form-grid select, .form-grid input, .note-label input { width: 100%; height: 43px; margin-top: 8px; padding: 0 10px; border: 1px solid var(--line); border-radius: 11px; background: #faf9f7; color: var(--ink); font-size: 12px; }

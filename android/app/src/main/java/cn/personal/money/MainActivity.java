@@ -55,7 +55,7 @@ public final class MainActivity extends Activity {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view,WebResourceRequest request) {
                 String url=request.getUrl().toString();
                 String name=url.startsWith(ORIGIN)?url.substring(ORIGIN.length()):"";
-                if (!name.equals("index.html") && !name.equals("app.js") && !name.equals("styles.css")) return new WebResourceResponse("text/plain","UTF-8",new ByteArrayInputStream(new byte[0]));
+                if (!name.equals("index.html") && !name.equals("app.js") && !name.equals("amount-calculator.js") && !name.equals("styles.css")) return new WebResourceResponse("text/plain","UTF-8",new ByteArrayInputStream(new byte[0]));
                 try { return new WebResourceResponse(name.endsWith("html")?"text/html":name.endsWith("css")?"text/css":"application/javascript","UTF-8",getAssets().open(name)); }
                 catch (IOException error) { return new WebResourceResponse("text/plain","UTF-8",new ByteArrayInputStream("加载失败".getBytes(StandardCharsets.UTF_8))); }
             }

@@ -5,16 +5,18 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.method.DigitsKeyListener;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.*;
-import java.math.BigDecimal;
 
 /** A small native form launched directly from the launcher, without loading the main screen. */
 public final class QuickEntryActivity extends Activity {
     private final String[] expense={"餐饮","交通","购物","住房","娱乐","医疗","学习","通讯","日用","其他"};
     private final String[] income={"工资","兼职","退款","理财","其他"};
-    private EditText amount,note; private Spinner category; private boolean isIncome;
+    private EditText amount,note; private Spinner category; private TextView amountPreview; private boolean isIncome;
     private int dp(int value){return Math.round(value*getResources().getDisplayMetrics().density);}
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -25,7 +27,19 @@ public final class QuickEntryActivity extends Activity {
         RadioGroup types=new RadioGroup(this);types.setOrientation(LinearLayout.HORIZONTAL);
         RadioButton out=new RadioButton(this);out.setId(View.generateViewId());out.setText("支出");types.addView(out);
         RadioButton in=new RadioButton(this);in.setId(View.generateViewId());in.setText("收入");types.addView(in);out.setChecked(true);form.addView(types);
-        amount=new EditText(this);amount.setHint("金额 ¥ 0.00");amount.setTextSize(28);amount.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);amount.setSingleLine();amount.setFilters(new InputFilter[]{new InputFilter.LengthFilter(14)});form.addView(amount);
+        amount=new EditText(this);amount.setHint("金额 ¥ 0.00");amount.setTextSize(28);amount.setSingleLine();amount.setKeyListener(DigitsKeyListener.getInstance("0123456789.+-*/"));amount.setRawInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);amount.setFilters(new InputFilter[]{new InputFilter.LengthFilter(80)});form.addView(amount);
+        amountPreview=new TextView(this);amountPreview.setText("可用 +、−、×、÷ 计算金额");amountPreview.setTextSize(13);form.addView(amountPreview);
+        LinearLayout operators=new LinearLayout(this);operators.setOrientation(LinearLayout.HORIZONTAL);form.addView(operators);
+        for(String operator:new String[]{"+","−","×","÷","="}) {
+            Button key=new Button(this);key.setText(operator);key.setAllCaps(false);
+            operators.addView(key,new LinearLayout.LayoutParams(0,dp(44),1));
+            key.setOnClickListener(view->insertOperator(operator));
+        }
+        amount.addTextChangedListener(new TextWatcher(){
+            @Override public void beforeTextChanged(CharSequence s,int start,int count,int after) {}
+            @Override public void onTextChanged(CharSequence s,int start,int before,int count) { updateAmountPreview(); }
+            @Override public void afterTextChanged(Editable s) {}
+        });
         category=new Spinner(this);setCategories();form.addView(category,new LinearLayout.LayoutParams(-1,dp(56)));
         types.setOnCheckedChangeListener((group,id)->{isIncome=id==in.getId();setCategories();});
         note=new EditText(this);note.setHint("备注（选填）");note.setSingleLine();note.setFilters(new InputFilter[]{new InputFilter.LengthFilter(80)});form.addView(note);
@@ -38,17 +52,30 @@ public final class QuickEntryActivity extends Activity {
         amount.requestFocus();
     }
     private void setCategories(){ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,isIncome?income:expense);category.setAdapter(adapter);}
+    private void updateAmountPreview(){
+        if(amount.getText().length()==0) {amountPreview.setText("可用 +、−、×、÷ 计算金额");return;}
+        try {amountPreview.setText("= ¥"+AmountCalculator.format(AmountCalculator.evaluate(amount.getText().toString())));}
+        catch(IllegalArgumentException error){amountPreview.setText(error.getMessage());}
+    }
+    private void insertOperator(String key){
+        if(key.equals("=")) {
+            try {amount.setText(AmountCalculator.format(AmountCalculator.evaluate(amount.getText().toString())));amount.setSelection(amount.length());}
+            catch(IllegalArgumentException error){amount.setError(error.getMessage());}
+            return;
+        }
+        int start=Math.max(0,amount.getSelectionStart()),end=Math.max(start,amount.getSelectionEnd());
+        amount.getText().replace(start,end,key.equals("−")?"-":key.equals("×")?"*":key.equals("÷")?"/":key);
+        amount.requestFocus();
+    }
     private void save(){
-        String value=amount.getText().toString().trim();
-        if(!value.matches("\\d+(\\.\\d{1,2})?")) {amount.setError("请输入金额，最多两位小数");return;}
         try {
-            long cents=new BigDecimal(value).movePointRight(2).longValueExact();
-            if(cents<=0) {amount.setError("金额必须大于零");return;}
+            long cents=AmountCalculator.evaluate(amount.getText().toString());
             LedgerStore.get(this).add(isIncome?"income":"expense",cents,category.getSelectedItem().toString(),note.getText().toString().trim());
             ReportScheduler.channel(this);ReportScheduler.schedule(this);
             ReportReceiver.WORKER.execute(()->{try{ReportEngine.refresh(getApplicationContext(),true);}catch(Exception ignored){}});
             Toast.makeText(this,"已保存",Toast.LENGTH_SHORT).show();finish();
-        } catch(Exception error){amount.setError("未能保存："+error.getMessage());}
+        } catch(IllegalArgumentException error){amount.setError(error.getMessage());}
+        catch(Exception error){amount.setError("未能保存："+error.getMessage());}
     }
     @Override protected void onSaveInstanceState(Bundle state){state.putBoolean("income",isIncome);state.putString("amount",amount.getText().toString());state.putString("note",note.getText().toString());state.putInt("category",category.getSelectedItemPosition());super.onSaveInstanceState(state);}
 }

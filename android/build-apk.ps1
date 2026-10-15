@@ -28,7 +28,7 @@ if (Test-Path -LiteralPath $taskBuild) {
 foreach ($taskDirectory in @($taskBuild,"$taskBuild\classes","$taskBuild\generated","$taskBuild\dex","$taskBuild\assets",$taskDist,$taskSigning)) {
     New-Item -ItemType Directory -Path $taskDirectory -Force | Out-Null
 }
-foreach ($taskAsset in @('index.html','app.js','styles.css')) { Copy-Item -LiteralPath (Join-Path $taskRoot "web\$taskAsset") -Destination "$taskBuild\assets\$taskAsset" }
+foreach ($taskAsset in @('index.html','app.js','amount-calculator.js','styles.css')) { Copy-Item -LiteralPath (Join-Path $taskRoot "web\$taskAsset") -Destination "$taskBuild\assets\$taskAsset" }
 $taskManifest = Get-Content -LiteralPath "$PSScriptRoot\app\src\main\AndroidManifest.xml" -Raw
 $taskManifest = $taskManifest.Replace('<manifest ', '<manifest package="cn.personal.money" ')
 [IO.File]::WriteAllText("$taskBuild\AndroidManifest.xml",$taskManifest,[Text.UTF8Encoding]::new($false))
@@ -56,7 +56,7 @@ if (-not (Test-Path -LiteralPath $taskKey)) {
     Invoke-BuildStep "$Jdk\bin\keytool.exe" @('-genkeypair','-keystore',$taskKey,'-storetype','PKCS12','-storepass:file',$taskPassword,'-keypass:file',$taskPassword,'-alias','money-manager','-keyalg','RSA','-keysize','3072','-validity','36500','-dname','CN=Money Manager Personal, OU=Personal, O=Local, C=CN')
 }
 if (-not (Test-Path -LiteralPath $taskPassword)) { throw '签名密码文件缺失，请恢复原签名备份，不要重新生成密钥。' }
-$taskApk = Join-Path $taskDist 'money-manager-0.1.0.apk'
+$taskApk = Join-Path $taskDist 'money-manager-0.2.0.apk'
 Invoke-BuildStep "$Jdk\bin\java.exe" @('-jar',"$BuildTools\lib\apksigner.jar",'sign','--ks',$taskKey,'--ks-key-alias','money-manager','--ks-pass',"file:$taskPassword",'--out',$taskApk,"$taskBuild\aligned.apk")
 Write-Output "已生成: $taskApk"
 Write-Output '请保留 android/.signing 中的签名材料，用于以后覆盖升级。'

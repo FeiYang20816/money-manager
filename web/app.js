@@ -31,6 +31,8 @@
   const entryModal = document.getElementById("entryModal");
   const toolsModal = document.getElementById("toolsModal");
   const entryForm = document.getElementById("entryForm");
+  const amountInput = document.getElementById("amount");
+  const amountPreview = document.getElementById("amountPreview");
   const importFile = document.getElementById("importFile");
   const current = new Date();
   const requestedPage = new URLSearchParams(window.location.search).get("page");
@@ -572,11 +574,41 @@
     document.getElementById("entryTitle").textContent = record ? "编辑账单" : "记一笔";
     document.getElementById("deleteEntry").hidden = !record;
     setEntryType(record ? record.type : "expense", record ? record.category : null);
-    document.getElementById("amount").value = record ? (record.amountCents / 100).toFixed(2) : "";
+    amountInput.value = record ? (record.amountCents / 100).toFixed(2) : "";
+    updateAmountPreview();
     document.getElementById("occurredAt").value = record ? record.occurredAt : localInput(new Date());
     document.getElementById("note").value = record ? record.note : "";
     entryModal.hidden = false;
-    setTimeout(function () { document.getElementById("amount").focus(); }, 40);
+    setTimeout(function () { amountInput.focus(); }, 40);
+  }
+  function updateAmountPreview() {
+    amountPreview.classList.remove("has-result");
+    if (!amountInput.value.trim()) { amountPreview.textContent = "可用 +、−、×、÷ 计算金额"; return; }
+    try {
+      const cents = window.MoneyAmount.evaluate(amountInput.value);
+      amountPreview.textContent = "= ¥" + money(cents);
+      amountPreview.classList.add("has-result");
+    } catch (error) {
+      amountPreview.textContent = error.message;
+    }
+  }
+  function insertAmountKey(key) {
+    if (key === "equals") {
+      try {
+        amountInput.value = (window.MoneyAmount.evaluate(amountInput.value) / 100).toFixed(2);
+      } catch (error) { showToast(error.message); }
+    } else {
+      const start = amountInput.selectionStart;
+      const end = amountInput.selectionEnd;
+      if (key === "backspace") {
+        const from = start === end ? Math.max(0, start - 1) : start;
+        amountInput.setRangeText("", from, end, "start");
+      } else if (amountInput.value.length - (end - start) < 80) {
+        amountInput.setRangeText(key, start, end, "end");
+      }
+    }
+    updateAmountPreview();
+    amountInput.focus();
   }
   function closeEntry() { entryModal.hidden = true; state.editingId = null; }
   function closeTools() { toolsModal.hidden = true; }
@@ -726,6 +758,10 @@
   document.querySelectorAll(".type-option").forEach(function (button) {
     button.addEventListener("click", function () { setEntryType(button.dataset.type); });
   });
+  amountInput.addEventListener("input", updateAmountPreview);
+  document.querySelectorAll("[data-amount-key]").forEach(function (button) {
+    button.addEventListener("click", function () { insertAmountKey(button.dataset.amountKey); });
+  });
   document.getElementById("deleteEntry").addEventListener("click", function () {
     if (!state.editingId || !window.confirm("确定删除这笔账单吗？")) return;
     records = records.filter(function (record) { return record.id !== state.editingId; });
@@ -737,9 +773,9 @@
   });
   entryForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    const rawAmount = document.getElementById("amount").value.trim();
-    if (!/^\d+(\.\d{1,2})?$/.test(rawAmount) || Number(rawAmount) <= 0) { showToast("请输入大于零的金额，最多两位小数"); return; }
-    const amountCents = Math.round(Number(rawAmount) * 100);
+    let amountCents;
+    try { amountCents = window.MoneyAmount.evaluate(amountInput.value); }
+    catch (error) { showToast(error.message); amountInput.focus(); return; }
     const occurredAt = document.getElementById("occurredAt").value;
     const record = normalizeRecord({
       id: state.editingId || makeId(),

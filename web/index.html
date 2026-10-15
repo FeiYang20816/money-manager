@@ -54,7 +54,15 @@
           <button type="button" class="type-option" data-type="income">收入</button>
         </div>
         <label class="amount-label" for="amount">金额</label>
-        <div class="amount-field"><span>¥</span><input id="amount" name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00" required></div>
+        <div class="amount-field"><span>¥</span><input id="amount" name="amount" type="text" inputmode="none" maxlength="80" autocomplete="off" spellcheck="false" placeholder="0.00" aria-describedby="amountPreview" required></div>
+        <div id="amountPreview" class="amount-preview" aria-live="polite">可用 +、−、×、÷ 计算金额</div>
+        <div class="amount-keypad" role="group" aria-label="金额计算键盘">
+          <button type="button" data-amount-key="7">7</button><button type="button" data-amount-key="8">8</button><button type="button" data-amount-key="9">9</button><button type="button" data-amount-key="/">÷</button>
+          <button type="button" data-amount-key="4">4</button><button type="button" data-amount-key="5">5</button><button type="button" data-amount-key="6">6</button><button type="button" data-amount-key="*">×</button>
+          <button type="button" data-amount-key="1">1</button><button type="button" data-amount-key="2">2</button><button type="button" data-amount-key="3">3</button><button type="button" data-amount-key="-">−</button>
+          <button type="button" data-amount-key="0">0</button><button type="button" data-amount-key=".">.</button><button type="button" data-amount-key="backspace" aria-label="退格">⌫</button><button type="button" data-amount-key="+">+</button>
+          <button type="button" class="amount-equals" data-amount-key="equals">= 计算</button>
+        </div>
         <div class="form-grid">
           <label>分类<select id="category" name="category" required></select></label>
           <label>日期时间<input id="occurredAt" name="occurredAt" type="datetime-local" required></label>
@@ -86,6 +94,7 @@
 
   <input id="importFile" type="file" accept=".json,.csv,application/json,text/csv" hidden>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./amount-calculator.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

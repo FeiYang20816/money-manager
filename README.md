@@ -6,7 +6,8 @@
 
 ## Android 安装版
 
-- 安装包：[下载 v0.1.0 APK](https://github.com/FeiYang20816/money-manager/releases/download/v0.1.0/money-manager-0.1.0.apk)
+- 安装包：[下载 v0.2.0 APK](https://github.com/FeiYang20816/money-manager/releases/download/v0.2.0/money-manager-0.2.0.apk)
+- v0.2.0 的金额输入支持加减乘除；在主界面和桌面快捷记账中均可使用。计算结果四舍五入到分后保存。
 - 安装与使用：[Android安装与使用.md](Android安装与使用.md)
 - 源码与构建说明：[android/README.md](android/README.md)
 - 系统要求：Android 8.0 及以上。
